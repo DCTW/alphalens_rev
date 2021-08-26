@@ -292,6 +292,23 @@ def create_returns_tear_sheet(
         plotting.plot_cumulative_returns_by_quantile(
             mean_quant_ret_bydate["1D"], period="1D", ax=gf.next_row()
         )
+    else:
+        for col in factor_data.columns:
+            if col == "30m" or col == "1h":
+                title = (
+                    "Factor Weighted "
+                    + ("Group Neutral " if group_neutral else "")
+                    + ("Long/Short " if long_short else "")
+                    + "Portfolio Cumulative Return (" + col + " Period)"
+                )
+
+                plotting.plot_cumsum_returns(
+                    factor_returns[col], period=col, title=title, ax=gf.next_row()
+                )
+
+                plotting.plot_cumsum_returns_by_quantile(
+                    mean_quant_ret_bydate[col], period=col, ax=gf.next_row()
+                )
 
     ax_mean_quantile_returns_spread_ts = [
         gf.next_row() for x in range(fr_cols)
@@ -431,7 +448,7 @@ def create_turnover_tear_sheet(factor_data, turnover_periods=None):
     if turnover_periods is None:
         input_periods = utils.get_forward_returns_columns(
             factor_data.columns, require_exact_day_multiple=True,
-        ).get_values()
+        ).to_numpy()
         turnover_periods = utils.timedelta_strings_to_integers(input_periods)
     else:
         turnover_periods = utils.timedelta_strings_to_integers(
@@ -523,7 +540,7 @@ def create_full_tear_sheet(factor_data,
     create_information_tear_sheet(
         factor_data, group_neutral, by_group, set_context=False
     )
-    create_turnover_tear_sheet(factor_data, set_context=False)
+    # create_turnover_tear_sheet(factor_data, set_context=False)
 
 
 @plotting.customize

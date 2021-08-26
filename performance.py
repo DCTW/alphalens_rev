@@ -352,6 +352,36 @@ def cumulative_returns(returns):
     return ep.cum_returns(returns, starting_value=1)
 
 
+def cumsum_return(returns, starting_value=1):
+    """
+    Compute cumulative returns from simple returns.
+    Parameters
+    ----------
+    starting_value : float, optional
+       The starting returns.
+    out : array-like, optional
+        Array to use as output buffer.
+        If not passed, a new array will be created.
+    Returns
+    -------
+    cumulative_returns : array-like
+        Series of cumulative returns.
+    """
+    if len(returns) < 1:
+        return returns.copy()
+
+    nanmask = np.isnan(returns)
+    if np.any(nanmask):
+        returns = returns.copy()
+        returns[nanmask] = 0
+
+    result = returns.copy()
+    result[0] = result[0] + starting_value
+    result = result.cumsum(axis=0)
+
+    return result
+
+
 def positions(weights, period, freq=None):
     """
     Builds net position values time series, the portfolio percentage invested

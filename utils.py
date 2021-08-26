@@ -289,6 +289,8 @@ def compute_forward_returns(factor,
         else:
             returns = prices.pct_change()
 
+        returns -= 0.003
+
         forward_returns = \
             returns.shift(-period).reindex(factor_dateindex)
 
