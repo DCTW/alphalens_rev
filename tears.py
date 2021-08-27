@@ -294,7 +294,7 @@ def create_returns_tear_sheet(
         )
     else:
         for col in factor_data.columns:
-            if col == "30m" or col == "1h":
+            if "m" in col or "h" in col:
                 title = (
                     "Factor Weighted "
                     + ("Group Neutral " if group_neutral else "")

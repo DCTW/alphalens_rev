@@ -215,6 +215,7 @@ def infer_trading_calendar(factor_idx, prices_idx):
 
 def compute_forward_returns(factor,
                             prices,
+                            _type,
                             periods=(1, 5, 10),
                             filter_zscore=None,
                             cumulative_returns=True):
@@ -224,6 +225,10 @@ def compute_forward_returns(factor,
 
     Parameters
     ----------
+    _type: int
+        1: long position,
+        -1: short position.
+
     factor : pd.Series - MultiIndex
         A MultiIndex Series indexed by timestamp (level 0) and asset
         (level 1), containing the values for a single alpha factor.
@@ -285,11 +290,11 @@ def compute_forward_returns(factor,
 
     for period in sorted(periods):
         if cumulative_returns:
-            returns = prices.pct_change(period)
+            returns = prices.pct_change(period) * _type
         else:
-            returns = prices.pct_change()
+            returns = prices.pct_change() * _type
 
-        returns -= (0.001425 * 2)
+        returns -= (0.003)
 
         forward_returns = \
             returns.shift(-period).reindex(factor_dateindex)
@@ -667,6 +672,7 @@ def get_clean_factor(factor,
 
 def get_clean_factor_and_forward_returns(factor,
                                          prices,
+                                         _type=1,
                                          groupby=None,
                                          binning_by_group=False,
                                          quantiles=5,
@@ -688,6 +694,10 @@ def get_clean_factor_and_forward_returns(factor,
 
     Parameters
     ----------
+    _type: int
+        1: long position,
+        -1: short position.
+
     factor : pd.Series - MultiIndex
         A MultiIndex Series indexed by timestamp (level 0) and asset
         (level 1), containing the values for a single alpha factor.
@@ -829,6 +839,7 @@ def get_clean_factor_and_forward_returns(factor,
     forward_returns = compute_forward_returns(
         factor,
         prices,
+        _type,
         periods,
         filter_zscore,
         cumulative_returns,
