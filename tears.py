@@ -277,38 +277,38 @@ def create_returns_tear_sheet(
 
     # Compute cumulative returns from daily simple returns, if '1D'
     # returns are provided.
-    if "1D" in factor_returns:
-        title = (
-            "Factor Weighted "
-            + ("Group Neutral " if group_neutral else "")
-            + ("Long/Short " if long_short else "")
-            + "Portfolio Cumulative Return (1D Period)"
-        )
+    # if "1D" in factor_returns:
+    #     title = (
+    #         "Factor Weighted "
+    #         + ("Group Neutral " if group_neutral else "")
+    #         + ("Long/Short " if long_short else "")
+    #         + "Portfolio Cumulative Return (1D Period)"
+    #     )
 
-        plotting.plot_cumulative_returns(
-            factor_returns["1D"], period="1D", title=title, ax=gf.next_row()
-        )
+    #     plotting.plot_cumulative_returns(
+    #         factor_returns["1D"], period="1D", title=title, ax=gf.next_row()
+    #     )
 
-        plotting.plot_cumulative_returns_by_quantile(
-            mean_quant_ret_bydate["1D"], period="1D", ax=gf.next_row()
-        )
-    else:
-        for col in factor_data.columns:
-            if "m" in col or "h" in col:
-                title = (
-                    "Factor Weighted "
-                    + ("Group Neutral " if group_neutral else "")
-                    + ("Long/Short " if long_short else "")
-                    + "Portfolio Cumulative Return (" + col + " Period)"
-                )
+    #     plotting.plot_cumulative_returns_by_quantile(
+    #         mean_quant_ret_bydate["1D"], period="1D", ax=gf.next_row()
+    #     )
+    # else:
+    for col in factor_data.columns:
+        if "m" in col or "h" in col or "D" in col:
+            title = (
+                "Factor Weighted "
+                + ("Group Neutral " if group_neutral else "")
+                + ("Long/Short " if long_short else "")
+                + "Portfolio Cumulative Return (" + col + " Period)"
+            )
 
-                plotting.plot_cumsum_returns(
-                    factor_returns[col], period=col, title=title, ax=gf.next_row()
-                )
+            plotting.plot_cumsum_returns(
+                factor_returns[col], period=col, title=title, ax=gf.next_row()
+            )
 
-                plotting.plot_cumsum_returns_by_quantile(
-                    mean_quant_ret_bydate[col], period=col, ax=gf.next_row()
-                )
+            plotting.plot_cumsum_returns_by_quantile(
+                mean_quant_ret_bydate[col], period=col, ax=gf.next_row()
+            )
 
     ax_mean_quantile_returns_spread_ts = [
         gf.next_row() for x in range(fr_cols)
